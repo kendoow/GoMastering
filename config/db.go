@@ -22,12 +22,12 @@ var (
 )
 
 func Connect() {
-	// dsn := "host=localhost user=root password=secret dbname=simple_bank port=5432 sslmode=disable"
+	dsn := "host=localhost user=root password=secret dbname=simple_bank port=5432 sslmode=disable"
 	postgresUrl, exists := os.LookupEnv("DATABASE_URL")
 	if exists {
 		fmt.Println(postgresUrl)
 	}
-	d, err := gorm.Open(postgres.Open(postgresUrl) , &gorm.Config{})
+	d, err := gorm.Open(postgres.Open(dsn) , &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

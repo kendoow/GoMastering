@@ -1,9 +1,10 @@
 package models
 
-import(
+import (
 	"time"
-	"gorm.io/gorm"
+
 	"github.com/kendoow/gomastering/config"
+	"gorm.io/gorm"
 )
 
 type Account struct {
@@ -42,6 +43,10 @@ type CrateAccountParams struct{
 	Balance  int64 `json:"balance"`
 	Currency string `json:"currency"`
 }
+type UpdateAccountParams struct{
+	ID int64 `json:"id"`
+	Balance int64 `json:"balance"`
+}
 
 func init(){
 	config.Connect()
@@ -54,17 +59,27 @@ func(b * Account) CreateAccount() *Account{
 	return b
 }
 
+func GetAccountById(id int64) (*Account, *gorm.DB){
+	var getAccount Account
+	db := db.Where("ID=?", id).Find(&getAccount)
+	return &getAccount, db
+}
+
+func UpdateAccount(args *UpdateAccountParams) Account {
+	var NewAccount Account
+	db := db.Where("id = ?", args.ID).First(&args)
+	
+	db = db.Model(&NewAccount).Update("Balance", args.Balance)
+	
+	return NewAccount
+}
+
 func GetAllAccounts() [] Account{
 	var Accounts []Account
 	db.Find(&Accounts)
 	return Accounts
 }
 
-func GetAccountById(ID int64) (*Account, *gorm.DB){
-	var getAccount Account
-	db := db.Where("ID=?", ID).Find(&getAccount)
-	return &getAccount, db
-}
 
 func DeleteAccount(ID int64) Account {
 	var Account Account

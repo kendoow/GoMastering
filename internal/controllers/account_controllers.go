@@ -21,6 +21,21 @@ func GetAccounts(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
+
+func GetAccountById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	accountId := vars["accountId"]
+	ID, err := strconv.ParseInt(accountId, 0, 0)
+	if err != nil {
+		fmt.Println("ошибка при парсинге id книги в GetAccountById")
+	}
+	accountDetails, _ := models.GetAccountById(ID)
+	res, _ := json.Marshal(accountDetails)
+	w.Header().Set("Content-Type", "pkglication/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+}
+
 func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	CreateAccount := &models.Account{}
 	utils.ParseBody(r, CreateAccount)
