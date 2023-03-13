@@ -2,7 +2,7 @@ package models
 
 import(
 	"time"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"github.com/kendoow/gomastering/config"
 )
 
@@ -49,21 +49,20 @@ func init(){
 	db.AutoMigrate(&Account{})
 }
 
-func(b * CrateAccountParams) CreateAccount() *CrateAccountParams{
-	db.NewRecord(b)
+func(b * Account) CreateAccount() *Account{
 	db.Create(&b)	
 	return b
 }
 
 func GetAllAccounts() [] Account{
-	var Account []Account
+	var Accounts []Account
 	db.Find(&Accounts)
 	return Accounts
 }
 
-func GetAccountById(id int64) (*Account, *gorm.DB){
+func GetAccountById(ID int64) (*Account, *gorm.DB){
 	var getAccount Account
-	db := db.Where("ID=?", id).Find(&getAccount)
+	db := db.Where("ID=?", ID).Find(&getAccount)
 	return &getAccount, db
 }
 

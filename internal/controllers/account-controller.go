@@ -8,12 +8,12 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/kendoow/gomastering/models"
-	"github.com/kendoow/gomastering/utils"
+	"github.com/kendoow/gomastering/internal/utils"
 )
 
 var NewAccount models.Account
 
-func GetAccount(w http.ResponseWriter, r *http.Request) {
+func GetAccounts(w http.ResponseWriter, r *http.Request) {
 	NewAccount := models.GetAllAccounts()
 	res, _ := json.Marshal(NewAccount)
 	w.Header().Set("Content-Type", "pkglication/json")
@@ -32,7 +32,7 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 
 func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	accountID := vars["account_id"]
+	accountID := vars["accountId"]
 	ID, err := strconv.ParseInt(accountID, 0, 0)
 	if err != nil {
 		fmt.Println("ошибка при парсинге id аккаунта в DeleteAccount")
@@ -48,12 +48,12 @@ func UpdateAccount(w http.ResponseWriter, r *http.Request) {
 	var updateAccount = &models.Account{}
 	utils.ParseBody(r, updateAccount)
 	vars := mux.Vars(r)
-	accountID := vars["account_id"]
+	accountID := vars["accountId"]
 	ID, err := strconv.ParseInt(accountID, 0, 0)
 	if err != nil {
-		fmt.Println("ошибка при парсинге id книги в UpdateAccount")
+		fmt.Println("ошибка при парсинге id аккаунта в UpdateAccount")
 	}
-	accountDetails, _ := models.GetaccountById(ID)
+	accountDetails, _ := models.GetAccountById(ID)
 	
 	
 	res, _ := json.Marshal(accountDetails)
