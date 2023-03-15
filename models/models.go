@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var db *gorm.DB
+
 type Account struct {
 	ID int64 `json:"id"`
 	Owner string `json:"owner"`
@@ -32,12 +34,6 @@ type Transfer struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-
-
-
-
-var db *gorm.DB
-
 type CrateAccountParams struct{
 	Owner string `gorm:""json:"owner"`
 	Balance  int64 `json:"balance"`
@@ -48,12 +44,28 @@ type UpdateAccountParams struct{
 	Balance int64 `json:"balance"`
 }
 
+type CreateEntryParams struct {
+	AccountID int64 `json:"account_id"`
+	Amount    int64 `json:"amount"`
+}
+
+
+type CreateTransferParams struct {
+	FromAccountID int64 `json:"from_account_id"`
+	ToAccountID   int64 `json:"to_account_id"`
+	Amount        int64 `json:"amount"`
+}
+
 func init(){
 	config.Connect()
 	db = config.GetBD()
 	db.AutoMigrate(&Account{})
+	db.AutoMigrate(&Entry{})
+	db.AutoMigrate(&Transfer{})
 }
 
+
+// account func's
 func(b * Account) CreateAccount() *Account{
 	db.Create(&b)	
 	return b
@@ -85,4 +97,55 @@ func DeleteAccount(ID int64) Account {
 	var Account Account
 	db.Where("ID=?",ID).Delete(Account)
 	return Account
+}
+
+// entries func's
+
+func (b * Entry) CreateEntry() *Entry{
+	db.Create(&b)	
+	return b
+}
+
+func GetEntryById(id int64) (*Entry, *gorm.DB){
+	var getEntry Entry
+	db := db.Where("ID=?", id).Find(&getEntry)
+	return &getEntry, db
+}
+
+func GetAllEntries() [] Entry{
+	var Entries []Entry
+	db.Find(&Entries)
+	return Entries
+}
+
+func DeleteEntry(ID int64) Entry {
+	var Entry Entry
+	db.Where("ID=?",ID).Delete(Entry)
+	return Entry
+}
+
+
+// transfer func's
+
+func (b * Transfer) CreateTransfer() *Transfer{
+	db.Create(&b)	
+	return b
+}
+
+func GetTransferById(id int64) (*Transfer, *gorm.DB){
+	var getTransfer Transfer
+	db := db.Where("ID=?", id).Find(&getTransfer)
+	return &getTransfer, db
+}
+
+func GetAllTransfers() [] Transfer{
+	var Transfers []Transfer
+	db.Find(&Transfers)
+	return Transfers
+}
+
+func DeleteTransfer(ID int64) Transfer {
+	var Transfer Transfer
+	db.Where("ID=?",ID).Delete(Transfer)
+	return Transfer
 }
